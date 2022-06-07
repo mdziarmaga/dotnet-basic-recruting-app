@@ -1,51 +1,63 @@
-﻿using MatchDataManager.Api.Helpers;
+﻿using MatchDataManager.Api.Data;
+using MatchDataManager.Api.Helpers;
 using MatchDataManager.Api.Models;
 
 namespace MatchDataManager.Api.Repositories;
 
-public static class LocationsRepository
+public class LocationsRepository : ILocationRepository
 {
-    private static readonly List<Location> _locations = new();
+    private readonly IMatchContext _matchContext;
 
-    public static void AddLocation(Location location)
+    public LocationsRepository(IMatchContext matchContext)
     {
-        foreach (var item in _locations)
+        _matchContext = matchContext;
+    }
+
+    public void AddLocation(Location location)
+    {
+        var locations = _matchContext.Location;
+        foreach (var item in locations)
             CheckNameHelper.CheckName(item.Name, location.Name);
 
         location.Id = Guid.NewGuid();
-        _locations.Add(location);
+        _matchContext.Location.Add(location);
+        _matchContext.SaveChanes();
     }
 
-    public static void DeleteLocation(Guid locationId)
+    public void DeleteLocation(Guid locationId)
     {
-        var location = _locations.FirstOrDefault(x => x.Id == locationId);
+        var location = _matchContext.Location.FirstOrDefault(x => x.Id == locationId);
         if (location is not null)
         {
-            _locations.Remove(location);
+            _matchContext.Location.Remove(location);
         }
+        _matchContext.SaveChanes();
     }
 
-    public static IEnumerable<Location> GetAllLocations()
+    public IEnumerable<Location> GetAllLocations()
     {
-        return _locations;
+        return _matchContext.Location;
     }
 
-    public static Location GetLocationById(Guid id)
+    public Location GetLocationById(Guid id)
     {
-        return _locations.FirstOrDefault(x => x.Id == id);
+        return _matchContext.Location.FirstOrDefault(x => x.Id == id);
     }
 
-    public static void UpdateLocation(Location location)
+    public void UpdateLocation(Location location)
     {
-        var existingLocation = _locations.FirstOrDefault(x => x.Id == location.Id);
+        var locations = _matchContext.Location;
+        var existingLocation = locations.FirstOrDefault(x => x.Id == location.Id);
         if (existingLocation is null || location is null)
         {
             throw new ArgumentException("Location doesn't exist.", nameof(location));
         }
-        foreach (var item in _locations)
+
+        foreach (var item in locations)
             CheckNameHelper.CheckName(item.Name, location.Name);
 
         existingLocation.City = location.City;
         existingLocation.Name = location.Name;
+        _matchContext.SaveChanes();
     }
 }
