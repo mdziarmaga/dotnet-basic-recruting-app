@@ -1,4 +1,5 @@
-﻿using MatchDataManager.Api.Models;
+﻿using MatchDataManager.Api.Helpers;
+using MatchDataManager.Api.Models;
 
 namespace MatchDataManager.Api.Repositories;
 
@@ -8,6 +9,9 @@ public static class TeamsRepository
 
     public static void AddTeam(Team team)
     {
+        foreach (var item in _teams)
+            CheckNameHelper.CheckName(item.Name, team.Name);
+
         team.Id = Guid.NewGuid();
         _teams.Add(team);
     }
@@ -38,6 +42,8 @@ public static class TeamsRepository
         {
             throw new ArgumentException("Team doesn't exist.", nameof(team));
         }
+        foreach (var item in _teams)
+            CheckNameHelper.CheckName(item.Name, team.Name);
 
         existingTeam.CoachName = team.CoachName;
         existingTeam.Name = team.Name;
