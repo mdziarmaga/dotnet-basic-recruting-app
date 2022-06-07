@@ -1,4 +1,5 @@
-﻿using MatchDataManager.Api.Models;
+﻿using MatchDataManager.Api.Helpers;
+using MatchDataManager.Api.Models;
 
 namespace MatchDataManager.Api.Repositories;
 
@@ -8,6 +9,9 @@ public static class LocationsRepository
 
     public static void AddLocation(Location location)
     {
+        foreach (var item in _locations)
+            CheckNameHelper.CheckName(item.Name, location.Name);
+
         location.Id = Guid.NewGuid();
         _locations.Add(location);
     }
@@ -38,6 +42,8 @@ public static class LocationsRepository
         {
             throw new ArgumentException("Location doesn't exist.", nameof(location));
         }
+        foreach (var item in _locations)
+            CheckNameHelper.CheckName(item.Name, location.Name);
 
         existingLocation.City = location.City;
         existingLocation.Name = location.Name;
