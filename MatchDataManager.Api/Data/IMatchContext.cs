@@ -1,4 +1,5 @@
-﻿using MatchDataManager.Api.Models;
+﻿using MatchDataManager.Api.DTO.Models;
+using MatchDataManager.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MatchDataManager.Api.Data
@@ -7,6 +8,6 @@ namespace MatchDataManager.Api.Data
     {
         public DbSet<Location> Location { get; set; }
         public DbSet<Team> Team { get; set; }
-        public void SaveChanes();
+        public Task SaveChanes();
     }
 }

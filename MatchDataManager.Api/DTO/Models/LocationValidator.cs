@@ -1,13 +1,12 @@
 ﻿using FluentValidation;
 
-namespace MatchDataManager.Api.Models
+namespace MatchDataManager.Api.DTO.Models
 {
     public class LocationValidator : AbstractValidator<Location>
     {
         public LocationValidator()
         {
             RuleFor(x => x.Name)
-                .NotNull()
                 .NotEmpty()
                 .WithMessage("Name is required.");
 
@@ -16,7 +15,6 @@ namespace MatchDataManager.Api.Models
                 .WithMessage("Length can't be longer than 255 signs.");
 
             RuleFor(x => x.City)
-                .NotNull()
                 .NotEmpty()
                 .WithMessage("City is required.");
 

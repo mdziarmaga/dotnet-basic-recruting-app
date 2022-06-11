@@ -1,4 +1,6 @@
-﻿namespace MatchDataManager.Api.Models;
+﻿using MatchDataManager.Api.Models;
+
+namespace MatchDataManager.Api.DTO.Models;
 
 public class Location : Entity
 {

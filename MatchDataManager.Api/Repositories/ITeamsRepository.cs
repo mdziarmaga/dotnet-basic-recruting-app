@@ -4,10 +4,10 @@ namespace MatchDataManager.Api.Repositories
 {
     public interface ITeamsRepository
     {
-        public void AddTeam(Team team);
-        public void DeleteTeam(Guid teamId);
-        public IEnumerable<Team> GetAllTeams();
-        public Team GetTeamById(Guid id);
-        public void UpdateTeam(Team team);
+        public Task<Team> AddTeam(Team team);
+        public Task<bool> DeleteTeam(Guid teamId);
+        public Task<IEnumerable<Team>> GetAllTeams();
+        public Task<Team> GetTeamById(Guid id);
+        public Task<Team> UpdateTeam(Team team);
     }
 }

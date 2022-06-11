@@ -1,13 +1,13 @@
-﻿using MatchDataManager.Api.Models;
+﻿using MatchDataManager.Api.DTO.Models;
 
 namespace MatchDataManager.Api.Repositories
 {
     public interface ILocationRepository
     {
-        public void AddLocation(Location location);
-        public void DeleteLocation(Guid locationId);
-        public IEnumerable<Location> GetAllLocations();
-        public Location GetLocationById(Guid id);
-        public void UpdateLocation(Location location);
+        public Task<Location> AddLocation(Location location);
+        public Task<bool> DeleteLocation(Guid locationId);
+        public Task<IEnumerable<Location>> GetAllLocations();
+        public Task<Location> GetLocationById(Guid id);
+        public Task<Location> UpdateLocation(Location location);
     }
 }

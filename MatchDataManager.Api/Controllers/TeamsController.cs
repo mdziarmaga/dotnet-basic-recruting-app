@@ -1,56 +1,48 @@
+using AutoWrapper.Wrappers;
+using MatchDataManager.Api.Controllers.Common;
+using MatchDataManager.Api.DTO.Teams.Commands;
+using MatchDataManager.Api.DTO.Teams.Queries;
 using MatchDataManager.Api.Models;
-using MatchDataManager.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatchDataManager.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class TeamsController : ControllerBase
+public class TeamsController : ApiController
 {
-    private readonly ITeamsRepository _teamsRepository;
-
-    public TeamsController(ITeamsRepository teamsRepository)
+    public TeamsController(IMediator mediator) : base(mediator)
     {
-        _teamsRepository = teamsRepository;
+
     }
 
     [HttpPost]
-    public IActionResult AddTeam(Team team)
+    public async Task<ApiResponse> AddTeam(Team team)
     {
-        _teamsRepository.AddTeam(team);
-        return CreatedAtAction(nameof(GetById), new {id = team.Id}, team);
+        return new ApiResponse(await Send(new AddTeamCommand { Team = team }));
     }
 
-    [HttpDelete]
-    public IActionResult DeleteTeam(Guid teamId)
+    [HttpDelete("{id:guid}")]
+    public async Task<ApiResponse> DeleteTeam(Guid id)
     {
-        _teamsRepository.DeleteTeam(teamId);
-        return NoContent();
+        return new ApiResponse(await Send(new DeleteTeamCommand { Id = id }));
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public async Task<ApiResponse> Get()
     {
-        return Ok(_teamsRepository.GetAllTeams());
+        return new ApiResponse(await Send(new GetTeamsQuery()));
     }
 
     [HttpGet("{id:guid}")]
-    public IActionResult GetById(Guid id)
+    public async Task<ApiResponse> GetById(Guid id)
     {
-        var location = _teamsRepository.GetTeamById(id);
-        if (location is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(location);
+        return new ApiResponse(await Send(new GetTeamByIdQuery { Id = id }));
     }
 
     [HttpPut]
-    public IActionResult UpdateTeam(Team team)
+    public async Task<ApiResponse> UpdateTeam(Team team)
     {
-        _teamsRepository.UpdateTeam(team);
-        return Ok(team);
+        return new ApiResponse(await Send(new UpdateTeamCommand { Team = team }));
     }
 }

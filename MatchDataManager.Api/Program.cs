@@ -1,3 +1,4 @@
+global using MediatR;
 using FluentValidation.AspNetCore;
 using System.Reflection;
 using MatchDataManager.Api.Data;
@@ -24,6 +25,8 @@ builder.Services.AddScoped<IMatchContext, MatchContext>();
 
 builder.Services.AddDbContext<MatchContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MatchDbContext")));
 
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,7 +36,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions { UseCustomSchema = true, IsDebug = true });
+app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions { IsDebug = true });
 
 app.UseHttpsRedirection();
 

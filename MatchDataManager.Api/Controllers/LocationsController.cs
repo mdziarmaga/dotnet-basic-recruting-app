@@ -1,56 +1,48 @@
-using MatchDataManager.Api.Models;
-using MatchDataManager.Api.Repositories;
+using AutoWrapper.Wrappers;
+using MatchDataManager.Api.Controllers.Common;
+using MatchDataManager.Api.DTO.Locations.Commands;
+using MatchDataManager.Api.DTO.Locations.Queries;
+using MatchDataManager.Api.DTO.Models;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MatchDataManager.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class LocationsController : ControllerBase
+public class LocationsController : ApiController
 {
-    private readonly ILocationRepository _locationRepository;
-
-    public LocationsController(ILocationRepository locationRepository)
+    public LocationsController(IMediator mediator) : base(mediator)
     {
-        _locationRepository = locationRepository;
     }
-    
+
     [HttpPost]
-    public IActionResult AddLocation(Location location)
+    public async Task<ApiResponse> AddLocation(Location location)
     {
-        _locationRepository.AddLocation(location);
-        return CreatedAtAction(nameof(GetById), new {id = location.Id}, location);
+        return new ApiResponse(await Send(new AddLocationCommand { Location = location }));
     }
 
-    [HttpDelete]
-    public IActionResult DeleteLocation(Guid locationId)
+    [HttpDelete("{id:guid}")]
+    public async Task<ApiResponse> DeleteLocation(Guid id)
     {
-        _locationRepository.DeleteLocation(locationId);
-        return NoContent();
+        return new ApiResponse(await Send(new DeleteLocationCommand { Id = id }));
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public async Task<ApiResponse> Get()
     {
-        return Ok(_locationRepository.GetAllLocations());
+        return new ApiResponse(await Send(new GetLocationsQuery()));
     }
 
     [HttpGet("{id:guid}")]
-    public IActionResult GetById(Guid id)
+    public async Task<ApiResponse> GetById(Guid id)
     {
-        var location = _locationRepository.GetLocationById(id);
-        if (location is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(location);
+        return new ApiResponse(await Send(new GetLocationByIdQuery { Id = id }));
     }
 
     [HttpPut]
-    public IActionResult UpdateLocation(Location location)
+    public async Task<ApiResponse> UpdateLocation(Location location)
     {
-        _locationRepository.UpdateLocation(location);
-        return Ok(location);
+        return new ApiResponse(await Send(new UpdateLocationCommand { Location = location }));
     }
 }

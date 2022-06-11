@@ -7,7 +7,6 @@ namespace MatchDataManager.Api.Models
         public TeamValidator()
         {
             RuleFor(x => x.Name)
-                .NotNull()
                 .NotEmpty()
                 .WithMessage("Name is required.");
 
@@ -16,7 +15,6 @@ namespace MatchDataManager.Api.Models
                 .WithMessage("Length can't be longer than 255 signs.");
 
             RuleFor(x => x.CoachName)
-                .NotNull()
                 .NotEmpty()
                 .WithMessage("CoachName is required.");
 
